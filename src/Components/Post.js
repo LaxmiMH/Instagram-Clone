@@ -7,7 +7,7 @@ const Post = ({userName, imageUrl, caption}) => {
         <div className="post">
             
             {/*header = avatar + username*/}
-            <div class="post__header">
+            <div className="post__header">
             <Avatar  className="post__avatar" alt="Laxmi" src="/static/images/avatar/1.jpg" />
             <h3>{userName}</h3>
             </div>
@@ -19,7 +19,7 @@ const Post = ({userName, imageUrl, caption}) => {
              alt=""/>
 
             {/*username + caption*/}
-            <h4 className="post__text"><strong>laxmi</strong> {caption}</h4>
+            <h4 className="post__text"><strong>{userName}</strong> {caption}</h4>
 
         </div>
     )
