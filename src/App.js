@@ -5,6 +5,7 @@ import { auth, db } from "./firebase";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import { Button, Input } from "@material-ui/core";
+import ImageUpload from "./Components/ImageUpload";
 
 function getModalStyle() {
   const top = 50;
@@ -34,7 +35,7 @@ function App() {
 
   const [posts, setPosts] = useState([]);
   const [open, setOpen] = useState(false);
-  const [openSignIn, setOpenSignIn] = useState(false)
+  const [openSignIn, setOpenSignIn] = useState(false);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -78,21 +79,20 @@ function App() {
         });
       })
       .catch((error) => alert(error.message));
-
-      
   };
 
-const signIn = (event) => {
- event.preventDefault();
- auth.signInWithEmailAndPassword(email, password)
- .catch( (error) => alert(error.message) )
- setOpenSignIn(false)
-}
-
-
+  const signIn = (event) => {
+    event.preventDefault();
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .catch((error) => alert(error.message));
+    setOpenSignIn(false);
+  };
 
   return (
     <div className="app">
+
+      <ImageUpload />
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -130,16 +130,15 @@ const signIn = (event) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              <Button onClick={signUp}>Sign  Up</Button>
+              <Button onClick={signUp}>Sign Up</Button>
             </form>
           </div>
         }
       </Modal>
 
-     
       <Modal
-       // modal for sign in
-       
+        // modal for sign in
+
         open={openSignIn}
         onClose={() => setOpenSignIn(false)}
         aria-labelledby="simple-modal-title"
@@ -156,7 +155,7 @@ const signIn = (event) => {
                 />
               </center>
 
-               <Input
+              <Input
                 placeholder="email"
                 type="text"
                 value={email}
@@ -169,7 +168,7 @@ const signIn = (event) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              <Button onClick={signIn}>Sign  In</Button>
+              <Button onClick={signIn}>Sign In</Button>
             </form>
           </div>
         }
