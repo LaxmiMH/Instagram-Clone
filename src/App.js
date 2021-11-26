@@ -5,7 +5,8 @@ import { auth, db } from "./firebase";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import { Button, Input } from "@material-ui/core";
-import ImageUpload from "./Components/ImageUpload";
+import ImageUpload from "./ImageUpload";
+import InstagramEmbed from "react-instagram-embed";
 
 function getModalStyle() {
   const top = 50;
@@ -63,10 +64,14 @@ function App() {
 
   //useEffectn runs a piece of code based on a specific condtion
   useEffect(() => {
-    db.collection("posts").onSnapshot((snapshot) => {
-      //every time a new post is added this code fire thats y we used onsnapshot method
-      setPosts(snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() })));
-    });
+    db.collection("posts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        //every time a new post is added this code fire thats y we used onsnapshot method
+        setPosts(
+          snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() }))
+        );
+      });
   }, []);
 
   const signUp = (event) => {
@@ -88,11 +93,10 @@ function App() {
       .catch((error) => alert(error.message));
     setOpenSignIn(false);
   };
+  console.log(user);
 
   return (
     <div className="app">
-
-      <ImageUpload />
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -181,26 +185,54 @@ function App() {
           src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
           alt=""
         />
+        {user ? (
+          <Button onClick={() => auth.signOut()}>LogOut</Button>
+        ) : (
+          <div className="app__loginContainer">
+            <Button onClick={() => setOpenSignIn(true)}>SignIn</Button>
+            <Button onClick={() => setOpen(true)}>SignUp</Button>
+          </div>
+        )}
       </div>
-      {user ? (
-        <Button onClick={() => auth.signOut()}>LogOut</Button>
-      ) : (
-        <div className="app__loginContainer">
-          <Button onClick={() => setOpenSignIn(true)}>SignIn</Button>
-          <Button onClick={() => setOpen(true)}>SignUp</Button>
-        </div>
-      )}
 
-      <h1>Hii start with new project🚀</h1>
-      {/*post*/}
-      {posts.map(({ id, post }) => (
-        <Post
-          key={id}
-          userName={post.userName}
-          caption={post.caption}
-          imageUrl={post.imageUrl}
-        />
-      ))}
+      <div className="app__posts">
+        <div className="app__postsLeft">
+          {/*post*/}
+          {posts.map(({ id, post }) => (
+            <Post
+              key={id}
+              postId={id}
+              user={user}
+              userName={post.userName}
+              caption={post.caption}
+              imageUrl={post.imageUrl}
+            />
+          ))}
+        </div>
+
+        <div className="app__postsRight">
+          <InstagramEmbed
+            url="https://instagr.am/p/Zw9o4/"
+            clientAccessToken="123|456"
+            maxWidth={320}
+            hideCaption={false}
+            containerTagName="div"
+            protocol=""
+            injectScript
+            onLoading={() => {}}
+            onSuccess={() => {}}
+            onAfterRender={() => {}}
+            onFailure={() => {}}
+          />
+        </div>
+      </div>
+
+      {/**checkng if user has logged in then only we can take that user userame  */}
+      {user?.displayName ? (
+        <ImageUpload username={user.displayName} />
+      ) : (
+        <h3>Sorry you need to login to upload</h3>
+      )}
     </div>
   );
 }
