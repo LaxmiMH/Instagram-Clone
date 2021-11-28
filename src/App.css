@@ -22,7 +22,7 @@
 
 .app__signUp {
   display: flex;
-
+  width: 90%;
   flex-direction: column;
 }
 .app__posts {

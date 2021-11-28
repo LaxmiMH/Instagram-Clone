@@ -10,7 +10,7 @@ import InstagramEmbed from "react-instagram-embed";
 
 function getModalStyle() {
   const top = 50;
-  const left = 50;
+  const left = 52;
 
   return {
     top: `${top}%`,
